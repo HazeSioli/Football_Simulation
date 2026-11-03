@@ -15,7 +15,11 @@ public class Attacker extends Player {
         int index = Math.random() < 0.5 ? 3 : 4;
         Player receiver = team.getPlayers()[index];
 
-        ball.moveTo(receiver.getXPos(), receiver.getYPos(), receiver.getZPos());
+        ball.kickTowards(
+                receiver.getXPos(),
+                receiver.getYPos(),
+                1000.0,
+                this);
     }
 
 }

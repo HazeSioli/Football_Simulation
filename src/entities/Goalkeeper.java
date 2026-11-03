@@ -15,7 +15,13 @@ public class Goalkeeper extends Player {
         int index = Math.random() < 0.5 ? 1 : 2;
         Player receiver = team.getPlayers()[index];
 
-        ball.moveTo(receiver.getXPos(), receiver.getYPos(), receiver.getZPos());
+        // ball.moveTo(receiver.getXPos(), receiver.getYPos(), receiver.getZPos());
+        
+        ball.kickTowards(
+                receiver.getXPos(),
+                receiver.getYPos(),
+                1000.0,
+                this);
     }
 
 }

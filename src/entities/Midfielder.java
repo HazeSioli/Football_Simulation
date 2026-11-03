@@ -14,7 +14,11 @@ public class Midfielder extends Player {
 
         Player receiver = team.getPlayers()[5];
 
-        ball.moveTo(receiver.getXPos(), receiver.getYPos(), receiver.getZPos());
+        ball.kickTowards(
+                receiver.getXPos(),
+                receiver.getYPos(),
+                1000.0,
+                this);
     }
 
 }

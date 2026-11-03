@@ -119,7 +119,38 @@ public class Main {
 
                         passingTimer.start();
 
+
+                        Timer movementTimer = new Timer(20, e -> {
+                                ball.update(0.02); // Update the ball's position every 20 milliseconds (0.02 seconds)
+                                
+                                if (ball.isMoving()){
+                                        boolean received = receiveBall(ball, redPlayers);
+                                        
+                                        if (!received) {
+                                                received = receiveBall(ball, bluePlayers);
+                                        }
+                                }
+
+                                panel.repaint();
+                        });
+
+                        movementTimer.start();
+
                 });
+        }
+
+        private static boolean receiveBall(Ball ball, Player[] players) {
+                for (Player player : players) {
+                        if (player != ball.getLastKicker() && player.canReceive(ball)) {
+                                ball.stop();
+                                ball.moveTo(
+                                        player.getXPos(),
+                                        player.getYPos(),
+                                        player.getZPos());
+                                        return true;
+                        }
+                }
+                return false;
         }
 
         private static Player[] loadTeamOrDefault(

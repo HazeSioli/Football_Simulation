@@ -10,8 +10,10 @@ public abstract class Player extends Entity {
     double spawnY;
     double spawnZ;
 
-    private double bodyRadiusCm = 30.0; // value chosen as a reasonable approximation of the average human body radius in centimeters
-    private double reachRadiusCm = 100.0; // value chosen as a reasonable approximation of the average human arm reach radius in centimeters
+    private double bodyRadiusCm = 30.0; // value chosen as a reasonable approximation of the average human body radius
+                                        // in centimeters
+    private double reachRadiusCm = 100.0; // value chosen as a reasonable approximation of the average human arm reach
+                                          // radius in centimeters
 
     Player(int number, double xPos, double yPos, double zPos) {
         super(xPos, yPos, zPos);
@@ -32,8 +34,18 @@ public abstract class Player extends Entity {
         zPos = spawnZ;
     }
 
+    public boolean canReceive(Ball ball) {
+        double horizontalDistance = Math.hypot(ball.getXPos() - xPos, ball.getYPos() - yPos);
+
+        return horizontalDistance <= bodyRadiusCm + ball.getRadiusCm()
+                && Math.abs(ball.getZPos() - zPos) <= ball.getRadiusCm();
+    }
+
     public boolean hasPossession(Ball ball) {
-        return xPos == ball.xPos && yPos == ball.yPos && zPos == ball.zPos;
+        return !ball.isMoving()
+            && xPos == ball.getXPos()
+            && yPos == ball.getYPos()
+            && zPos == ball.getZPos();
     }
 
     public abstract void pass();
