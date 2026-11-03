@@ -12,8 +12,8 @@ package world;
 
 public class PlaySpace {
 
-    private double length;  // Was "width" but changed to "length" to match the field length terminology
-    private double width;  // Was "height" but changed to "width" to match the field width terminology
+    private double length; // Was "width" but changed to "length" to match the field length terminology
+    private double width; // Was "height" but changed to "width" to match the field width terminology
 
     private Goal leftGoal;
     private Goal rightGoal;
@@ -24,6 +24,7 @@ public class PlaySpace {
 
         double goalDepth = 150;
         double goalWidth = 300;
+        double goalHeight = 244; // Standard goal height in cm (2.44 meters)
 
         double goalY = (width - goalWidth) / 2;
 
@@ -31,13 +32,15 @@ public class PlaySpace {
                 0,
                 goalY,
                 goalDepth,
-                goalWidth);
+                goalWidth,
+                goalHeight);
 
         rightGoal = new Goal(
                 length - goalDepth,
                 goalY,
                 goalDepth,
-                goalWidth);
+                goalWidth,
+                goalHeight);
     }
 
     public double getLength() {

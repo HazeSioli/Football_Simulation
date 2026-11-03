@@ -2,8 +2,8 @@ package entities;
 
 public class Defender extends Player {
 
-    public Defender(int number, double xPos, double yPos) {
-        super(number, xPos, yPos);
+    public Defender(int number, double xPos, double yPos, double zPos) {
+        super(number, xPos, yPos, zPos);
     }
 
     @Override
@@ -15,7 +15,7 @@ public class Defender extends Player {
         int index = Math.random() < 0.5 ? 3 : 4;
         Player receiver = team.getPlayers()[index];
 
-        ball.moveTo(receiver.getXPos(), receiver.getYPos());
+        ball.moveTo(receiver.getXPos(), receiver.getYPos(), receiver.getZPos());
     }
 
 }

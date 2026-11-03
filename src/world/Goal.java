@@ -3,7 +3,8 @@ package world;
 /**
  * Describes a goal zone within the playing region.
  * Being inside this region alone does not establish a valid score:
- * Entry through the front openings of the goal is required for a score to be valid.
+ * Entry through the front openings of the goal is required for a score to be
+ * valid.
  */
 
 public class Goal {
@@ -12,12 +13,14 @@ public class Goal {
     private double y;
     private double depth;
     private double width;
+    private double height;
 
-    public Goal(double x, double y, double depth, double width) {
+    public Goal(double x, double y, double depth, double width, double height) {
         this.x = x;
         this.y = y;
         this.depth = depth;
         this.width = width;
+        this.height = height;
     }
 
     public double getX() {
@@ -36,6 +39,10 @@ public class Goal {
         return width;
     }
 
+    public double getHeight() {
+        return height;
+    }
+
     public void setX(double x) {
         this.x = x;
     }
@@ -52,4 +59,7 @@ public class Goal {
         this.width = width;
     }
 
+    public void setHeight(double height) {
+        this.height = height;
+    }
 }

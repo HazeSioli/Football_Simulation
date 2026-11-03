@@ -11,132 +11,130 @@ import world.GameMap;
 
 public class SimulationPanel extends Panel {
 
-    private GameMap map;
+        private GameMap map;
 
-    private Team redTeam;
-    private Team blueTeam;
-    private Ball ball;
+        private Team redTeam;
+        private Team blueTeam;
+        private Ball ball;
 
-    public SimulationPanel(
-            GameMap map,
-            Team redTeam,
-            Team blueTeam,
-            Ball ball) {
+        public SimulationPanel(
+                        GameMap map,
+                        Team redTeam,
+                        Team blueTeam,
+                        Ball ball) {
 
-        this.map = map;
-        this.redTeam = redTeam;
-        this.blueTeam = blueTeam;
-        this.ball = ball;
-    }
-
-    private void drawPlayers(
-            Graphics g,
-            Player[] players,
-            Color colour,
-            int offsetX,
-            int offsetY) {
-
-        int playerSize = 24;
-
-        g.setColor(colour);
-
-        for (Player player : players) {
-            g.fillOval(
-                    offsetX + (int) player.getXPos() - playerSize / 2,
-                    offsetY + (int) player.getYPos() - playerSize / 2,
-                    playerSize,
-                    playerSize);
+                this.map = map;
+                this.redTeam = redTeam;
+                this.blueTeam = blueTeam;
+                this.ball = ball;
         }
-    }
 
-    public void paint(Graphics g) {
+        private void drawPlayers(
+                        Graphics g,
+                        Player[] players,
+                        Color colour,
+                        int offsetX,
+                        int offsetY) {
 
-        PlaySpace playSpace = map.getPlaySpace();
-        Environment environment = map.getEnvironment();
+                int playerSize = 24;
 
-        int marginX = (int) map.getMarginX();
-        int marginY = (int) map.getMarginY();
+                g.setColor(colour);
 
-        g.setColor(environment.getSurroundingTerrain().getDisplayColor());
-        g.fillRect(
-                0,
-                0,
-                getWidth(),
-                getHeight());
+                for (Player player : players) {
+                        g.fillOval(
+                                        offsetX + (int) player.getXPos() - playerSize / 2,
+                                        offsetY + (int) player.getYPos() - playerSize / 2,
+                                        playerSize,
+                                        playerSize);
+                }
+        }
 
-        g.setColor(environment.getPlayingTerrain().getDisplayColor());
-        g.fillRect(
-                marginX,
-                marginY,
-                (int) playSpace.getLength(),
-                (int) playSpace.getWidth());
+        public void paint(Graphics g) {
 
-        g.setColor(Color.WHITE);
+                PlaySpace playSpace = map.getPlaySpace();
+                Environment environment = map.getEnvironment();
 
-        // int width = getWidth();
-        // int height = getHeight();
+                int marginX = (int) map.getMarginX();
+                int marginY = (int) map.getMarginY();
 
-        Goal leftGoal = playSpace.getLeftGoal();
-        Goal rightGoal = playSpace.getRightGoal();
+                g.setColor(environment.getSurroundingTerrain().getDisplayColor());
+                g.fillRect(
+                                0,
+                                0,
+                                getWidth(),
+                                getHeight());
 
-        // DRAWS THE FIELD'S CENTRE LINE
-        // needs to cast measurements as "(int)" for compatibility
-        // g.drawLine(width / 2, 0, width / 2, height);
-        g.drawLine(
-                marginX + (int) playSpace.getLength() / 2,
-                marginY + 0,
-                marginX + (int) playSpace.getLength() / 2,
-                marginY + (int) playSpace.getWidth());
+                g.setColor(environment.getPlayingTerrain().getDisplayColor());
+                g.fillRect(
+                                marginX,
+                                marginY,
+                                (int) playSpace.getLength(),
+                                (int) playSpace.getWidth());
 
-        // DRAWS THE GOALS
-        // g.drawRect(0, 175, 150, 300);
-        // g.drawRect(width - 150, 175, 150, 300);
+                g.setColor(Color.WHITE);
 
-        g.drawRect(
-                marginX + (int) leftGoal.getX(),
-                marginY + (int) leftGoal.getY(),
-                (int) leftGoal.getDepth(),
-                (int) leftGoal.getWidth());
+                // int width = getWidth();
+                // int height = getHeight();
 
-        g.drawRect(
-                marginX + (int) rightGoal.getX(),
-                marginY + (int) rightGoal.getY(),
-                (int) rightGoal.getDepth(),
-                (int) rightGoal.getWidth());
+                Goal leftGoal = playSpace.getLeftGoal();
+                Goal rightGoal = playSpace.getRightGoal();
 
-        // g.setColor(Color.RED);
+                // DRAWS THE FIELD'S CENTRE LINE
+                // needs to cast measurements as "(int)" for compatibility
+                // g.drawLine(width / 2, 0, width / 2, height);
+                g.drawLine(
+                                marginX + (int) playSpace.getLength() / 2,
+                                marginY + 0,
+                                marginX + (int) playSpace.getLength() / 2,
+                                marginY + (int) playSpace.getWidth());
 
-        drawPlayers(
-            g, 
-            redTeam.getPlayers(), 
-            redTeam.getColor(), 
-            marginX, 
-            marginY
-        );
+                // DRAWS THE GOALS
+                // g.drawRect(0, 175, 150, 300);
+                // g.drawRect(width - 150, 175, 150, 300);
 
-        drawPlayers(
-            g, 
-            blueTeam.getPlayers(), 
-            blueTeam.getColor(), 
-            marginX, 
-            marginY
-        );
+                g.drawRect(
+                                marginX + (int) leftGoal.getX(),
+                                marginY + (int) leftGoal.getY(),
+                                (int) leftGoal.getDepth(),
+                                (int) leftGoal.getWidth());
 
-        // Ball Draw
-        int ballSize = 12;
+                g.drawRect(
+                                marginX + (int) rightGoal.getX(),
+                                marginY + (int) rightGoal.getY(),
+                                (int) rightGoal.getDepth(),
+                                (int) rightGoal.getWidth());
 
-        g.setColor(Color.WHITE);
-        g.fillOval(
-                marginX + (int) ball.getXPos() - ballSize / 2,
-                marginY + (int) ball.getYPos() - ballSize / 2,
-                ballSize,
-                ballSize);
+                // g.setColor(Color.RED);
 
-        g.setColor(Color.BLACK);
-        g.drawOval(
-                marginX + (int) ball.getXPos() - ballSize / 2,
-                marginY + (int) ball.getYPos() - ballSize / 2,
-                ballSize,
-                ballSize);
-    }
+                drawPlayers(
+                                g,
+                                redTeam.getPlayers(),
+                                redTeam.getColor(),
+                                marginX,
+                                marginY);
+
+                drawPlayers(
+                                g,
+                                blueTeam.getPlayers(),
+                                blueTeam.getColor(),
+                                marginX,
+                                marginY);
+
+                // Ball Draw
+                int ballSize = 12;
+
+                g.setColor(Color.WHITE);
+                g.fillOval(
+                                marginX + (int) ball.getXPos() - ballSize / 2,
+                                marginY + (int) ball.getYPos() - ballSize / 2,
+                                ballSize,
+                                ballSize);
+
+                g.setColor(Color.BLACK);
+                g.drawOval(
+                                marginX + (int) ball.getXPos() - ballSize / 2,
+                                marginY + (int) ball.getYPos() - ballSize / 2,
+                                ballSize,
+                                ballSize);
+        }
 }

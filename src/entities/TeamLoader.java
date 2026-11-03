@@ -20,8 +20,7 @@ public class TeamLoader {
 
         int[] numbers = new int[6];
 
-        try (BufferedReader reader =
-                new BufferedReader(new FileReader(filename))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 
             for (int i = 0; i < expectedRoles.length; i++) {
                 String line = reader.readLine();

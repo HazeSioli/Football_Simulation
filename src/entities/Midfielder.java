@@ -2,8 +2,8 @@ package entities;
 
 public class Midfielder extends Player {
 
-    public Midfielder(int number, double xPos, double yPos) {
-        super(number, xPos, yPos);
+    public Midfielder(int number, double xPos, double yPos, double zPos) {
+        super(number, xPos, yPos, zPos);
     }
 
     @Override
@@ -14,7 +14,7 @@ public class Midfielder extends Player {
 
         Player receiver = team.getPlayers()[5];
 
-        ball.moveTo(receiver.getXPos(), receiver.getYPos());
+        ball.moveTo(receiver.getXPos(), receiver.getYPos(), receiver.getZPos());
     }
 
 }

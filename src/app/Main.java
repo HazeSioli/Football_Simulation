@@ -35,7 +35,8 @@ public class Main {
 
                 Ball ball = new Ball(
                                 playSpace.getLength() / 2,
-                                playSpace.getWidth() / 2);
+                                playSpace.getWidth() / 2,
+                                0.0);
 
                 for (Player player : redPlayers) {
                         player.setMatchDetails(ball, redTeam);
@@ -45,11 +46,10 @@ public class Main {
                         player.setMatchDetails(ball, blueTeam);
                 }
 
-                
-
-                EventQueue.invokeLater(() -> {          // <<<<< ensures that the GUI is created on the Event Dispatch Thread (EDT)
-                        Frame frame = new Frame("Football Simulation"); 
-                        SimulationPanel panel = new SimulationPanel( 
+                EventQueue.invokeLater(() -> { // <<<<< ensures that the GUI is created on the Event Dispatch Thread
+                                               // (EDT)
+                        Frame frame = new Frame("Football Simulation");
+                        SimulationPanel panel = new SimulationPanel(
                                         map,
                                         redTeam,
                                         blueTeam,
@@ -65,11 +65,11 @@ public class Main {
                         frame.setVisible(true);
 
                         frame.addWindowListener(
-                                new WindowAdapter() {
-                                        public void windowClosing(WindowEvent we) {
-                                                System.exit(0);
-                                        }
-                                });
+                                        new WindowAdapter() {
+                                                public void windowClosing(WindowEvent we) {
+                                                        System.exit(0);
+                                                }
+                                        });
 
                         Timer timer = new Timer(1000, e -> {
                                 Player attacker;
@@ -80,24 +80,24 @@ public class Main {
                                         attacker = bluePlayers[5];
                                 }
 
-                                ball.moveTo(attacker.getXPos(), attacker.getYPos());
+                                ball.moveTo(attacker.getXPos(), attacker.getYPos(), attacker.getZPos());
                                 panel.repaint();
                         });
 
-                        timer.setRepeats(false);    
-                        timer.start(); 
+                        timer.setRepeats(false);
+                        timer.start();
 
-                        Timer passingTimer = new Timer(2000, e -> { 
+                        Timer passingTimer = new Timer(2000, e -> {
                                 Player ballHolder = null;
 
-                                for (Player player : redPlayers) {     
+                                for (Player player : redPlayers) {
                                         if (player.hasPossession(ball)) {
                                                 ballHolder = player;
                                                 break;
                                         }
                                 }
 
-                                if (ballHolder == null) {              
+                                if (ballHolder == null) {
                                         for (Player player : bluePlayers) {
                                                 if (player.hasPossession(ball)) {
                                                         ballHolder = player;
@@ -106,13 +106,13 @@ public class Main {
                                         }
                                 }
 
-                                if (ballHolder != null) {         
+                                if (ballHolder != null) {
                                         ballHolder.pass();
                                         panel.repaint();
                                 }
                         });
 
-                        passingTimer.start();            
+                        passingTimer.start();
 
                 });
         }
