@@ -91,8 +91,13 @@ public class Match {
             Player assister,
             boolean ownGoal) {
 
-        if (!gameState.isRunning()) {
+        if (!gameState.isRunning() || gameState.isPaused()) {
             return;
+        }
+
+        if(scoringTeam == null
+            || (scoringTeam != redTeam && scoringTeam != blueTeam)) {
+            throw new IllegalArgumentException("Invalid scoring team.");
         }
 
         GoalEvent goalEvent = new GoalEvent(

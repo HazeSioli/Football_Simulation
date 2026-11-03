@@ -8,8 +8,9 @@ import world.Goal;
 import world.PlaySpace;
 import world.Environment;
 import world.GameMap;
+import javax.swing.JPanel;
 
-public class SimulationPanel extends Panel {
+public class SimulationPanel extends JPanel {
 
         private GameMap map;
 
@@ -72,7 +73,10 @@ public class SimulationPanel extends Panel {
                 }
         }
 
-        public void paint(Graphics g) {
+        @Override 
+        protected void paintComponent(Graphics g) {
+
+                super.paintComponent(g);
 
                 PlaySpace playSpace = map.getPlaySpace();
                 Environment environment = map.getEnvironment();
@@ -175,10 +179,5 @@ public class SimulationPanel extends Panel {
                                 ballSize);
         }
 
-        // Override the update method to call paint directly, preventing flickering
-        @Override
-        public void update(Graphics g) {
-                paint(g);
-        }
 
 }

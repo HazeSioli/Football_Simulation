@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.Timer; // added to try get the ball to Update every n milliseconds
+import javax.swing.JFrame;
 
 import entities.Ball;
 import entities.Player;
@@ -48,7 +49,7 @@ public class Main {
 
                 EventQueue.invokeLater(() -> { // <<<<< ensures that the GUI is created on the Event Dispatch Thread
                                                // (EDT)
-                        Frame frame = new Frame("Football Simulation");
+                        JFrame frame = new JFrame("Football Simulation");
                         SimulationPanel panel = new SimulationPanel(
                                         map,
                                         redTeam,
