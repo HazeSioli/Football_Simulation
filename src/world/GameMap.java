@@ -13,7 +13,7 @@ public class GameMap {
         switch (preset) {
 
             case FIFA_PRO:
-                playSpace = new PlaySpace(10500.0, 6800.0);
+                playSpace = new PlaySpace(10500.0, 6800.0, new FieldMarkings());
                 environment = new Environment();
                 marginX = 1000.0;
                 marginY = 1000.0;
@@ -21,7 +21,7 @@ public class GameMap {
 
             case DEFAULT:
             default:
-                playSpace = new PlaySpace(10000.0, 6500.0);
+                playSpace = new PlaySpace(10000.0, 6500.0, new FieldMarkings());
                 environment = new Environment();
                 marginX = 1500.0;
                 marginY = 1000.0;

@@ -8,6 +8,7 @@ import world.Goal;
 import world.PlaySpace;
 import world.Environment;
 import world.GameMap;
+import world.FieldMarkings;
 import javax.swing.JPanel;
 
 public class SimulationPanel extends JPanel {
@@ -55,7 +56,6 @@ public class SimulationPanel extends JPanel {
                                         colour.getGreen(),
                                         colour.getBlue(),
                                         51));
-                                        
 
                         g.fillOval(
                                         centerX - reachSize / 2,
@@ -73,7 +73,86 @@ public class SimulationPanel extends JPanel {
                 }
         }
 
-        @Override 
+        private void drawFieldMarkings(
+                        Graphics g,
+                        PlaySpace playSpace,
+                        int originX,
+                        int originY,
+                        double scale) {
+
+                FieldMarkings markings = playSpace.getFieldMarkings();
+
+                int fieldLength = (int) Math.round(playSpace.getLength() * scale);
+                int fieldWidth = (int) Math.round(playSpace.getWidth() * scale);
+
+                int centreX = originX
+                                + (int) Math.round(playSpace.getLength() / 2 * scale);
+                int centreY = originY
+                                + (int) Math.round(playSpace.getWidth() / 2 * scale);
+
+                g.setColor(Color.WHITE);
+
+                // OUTER BOUNDARY LLINES
+                g.drawRect(originX, originY, fieldLength, fieldWidth);
+
+                // HALFWAY LINE
+                g.drawLine(centreX, originY, centreX, originY + fieldWidth);
+
+                // CENTRE CIRCLE
+                double radius = markings.getCentreCircleRadius();
+                int circleX = originX + (int) Math.round((playSpace.getLength() / 2 - radius) * scale);
+                int circleY = originY + (int) Math.round((playSpace.getWidth() / 2 - radius) * scale);
+                int circleDiameter = (int) Math.round(radius * 2 * scale);
+
+                g.drawOval(circleX, circleY, circleDiameter, circleDiameter);
+
+                // CENTRE DOT
+                int dotSize = 3;
+                g.fillOval(
+                                centreX - dotSize / 2,
+                                centreY - dotSize / 2,
+                                dotSize,
+                                dotSize);
+
+                // PENALTY AREAS
+                double penaltyDepth = markings.getPenaltyAreaDepth();
+                double leftGoalWidth = playSpace.getLeftGoal().getWidth();
+
+                double penaltyWidth = leftGoalWidth + 2 * penaltyDepth;
+                double penaltyY = (playSpace.getWidth() - penaltyWidth) / 2;
+
+                g.drawRect(
+                                originX,
+                                originY + (int) Math.round(penaltyY * scale),
+                                (int) Math.round(penaltyDepth * scale),
+                                (int) Math.round(penaltyWidth * scale));
+
+                g.drawRect(
+                                originX + (int) Math.round((playSpace.getLength() - penaltyDepth) * scale),
+                                originY + (int) Math.round(penaltyY * scale),
+                                (int) Math.round(penaltyDepth * scale),
+                                (int) Math.round(penaltyWidth * scale));
+
+                // GOAL AREAS
+                double goalAreaDepth = markings.getGoalAreaDepth();
+                double goalAreaWidth = leftGoalWidth + 2 * goalAreaDepth;
+                double goalAreaY = (playSpace.getWidth() - goalAreaWidth) / 2;
+
+                // LEFT GOAL AREA
+                g.drawRect(
+                                originX,
+                                originY + (int) Math.round(goalAreaY * scale),
+                                (int) Math.round(goalAreaDepth * scale),
+                                (int) Math.round(goalAreaWidth * scale));
+                // RIGHT GOAL AREA
+                g.drawRect(
+                                originX + (int) Math.round((playSpace.getLength() - goalAreaDepth) * scale),
+                                originY + (int) Math.round(goalAreaY * scale),
+                                (int) Math.round(goalAreaDepth * scale),
+                                (int) Math.round(goalAreaWidth * scale));
+        }
+
+        @Override
         protected void paintComponent(Graphics g) {
 
                 super.paintComponent(g);
@@ -108,6 +187,15 @@ public class SimulationPanel extends JPanel {
                                 (int) Math.round(playSpace.getLength() * scale),
                                 (int) Math.round(playSpace.getWidth() * scale));
 
+                // Draws the markings on the field, such as the halfway line, centre circle, and
+                // penalty areas.
+                drawFieldMarkings(
+                                g,
+                                playSpace,
+                                marginX,
+                                marginY,
+                                scale);
+
                 g.setColor(Color.WHITE);
 
                 // int width = getWidth();
@@ -115,15 +203,6 @@ public class SimulationPanel extends JPanel {
 
                 Goal leftGoal = playSpace.getLeftGoal();
                 Goal rightGoal = playSpace.getRightGoal();
-
-                // DRAWS THE FIELD'S CENTRE LINE
-                // needs to cast measurements as "(int)" for compatibility
-                // g.drawLine(width / 2, 0, width / 2, height);
-                g.drawLine(
-                                marginX + (int) Math.round(playSpace.getLength() / 2 * scale),
-                                marginY,
-                                marginX + (int) Math.round(playSpace.getLength() / 2 * scale),
-                                marginY + (int) Math.round(playSpace.getWidth() * scale));
 
                 // DRAWS THE GOALS
                 // g.drawRect(0, 175, 150, 300);
@@ -161,8 +240,8 @@ public class SimulationPanel extends JPanel {
 
                 // Ball Draw
                 int ballSize = Math.max(
-                        1,
-                        (int) Math.round(ball.getRadiusCm() * 2 * scale));
+                                1,
+                                (int) Math.round(ball.getRadiusCm() * 2 * scale));
 
                 g.setColor(Color.WHITE);
                 g.fillOval(
@@ -178,6 +257,5 @@ public class SimulationPanel extends JPanel {
                                 ballSize,
                                 ballSize);
         }
-
 
 }

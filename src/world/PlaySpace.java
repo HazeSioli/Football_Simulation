@@ -20,9 +20,12 @@ public class PlaySpace {
     private Goal leftGoal;
     private Goal rightGoal;
 
-    public PlaySpace(double length, double width) {
+    private final FieldMarkings fieldMarkings;
+
+    public PlaySpace(double length, double width, FieldMarkings fieldMarkings) {
         this.length = length;
         this.width = width;
+        this.fieldMarkings = fieldMarkings;
 
         double goalDepth = 200.0; // Chosen depth of the goal in cm (2 meters), it could be anything really but idk what the standard is. 
         double goalWidth = 732.0; // Standard goal width in cm (7.32 meters)
@@ -59,6 +62,10 @@ public class PlaySpace {
 
     public Goal getRightGoal() {
         return rightGoal;
+    }
+
+    public FieldMarkings getFieldMarkings() {
+        return fieldMarkings;
     }
 
 }
