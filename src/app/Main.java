@@ -23,13 +23,12 @@ public class Main {
         public static void main(String[] args) {
 
                 GameMap map = new GameMap(MapPreset.DEFAULT);
+
                 PlaySpace playSpace = map.getPlaySpace();
 
-                Frame frame = new Frame("Football Simulation");
+                Player[] redPlayers = loadTeamOrDefault("teams/presets/average.txt", playSpace, true);
 
-                Player[] redPlayers = loadTeamOrDefault("red-team.txt", playSpace, true);
-
-                Player[] bluePlayers = loadTeamOrDefault("blue-team.txt", playSpace, false);
+                Player[] bluePlayers = loadTeamOrDefault("teams/presets/average.txt", playSpace, false);
 
                 Team redTeam = new Team("Red Team", Color.RED, redPlayers);
                 Team blueTeam = new Team("Blue Team", Color.BLUE, bluePlayers);
@@ -46,70 +45,76 @@ public class Main {
                         player.setMatchDetails(ball, blueTeam);
                 }
 
-                SimulationPanel panel = new SimulationPanel(
-                                map,
-                                redTeam,
-                                blueTeam,
-                                ball);
+                
 
-                panel.setPreferredSize(
-                                new Dimension(
-                                                (int) (playSpace.getWidth() + map.getMarginX() * 2),
-                                                (int) (playSpace.getHeight() + map.getMarginY() * 2)));
+                EventQueue.invokeLater(() -> {
+                        Frame frame = new Frame("Football Simulation"); // <<<<< marked for invokeLater
+                        SimulationPanel panel = new SimulationPanel( // <<<<< marked for invokeLater
+                                        map,
+                                        redTeam,
+                                        blueTeam,
+                                        ball);
 
-                frame.add(panel);
-                frame.pack();
-                frame.setVisible(true);
+                        panel.setPreferredSize(         // <<<<< marked for invokeLater
+                                        new Dimension(
+                                                        (int) (playSpace.getWidth() + map.getMarginX() * 2),
+                                                        (int) (playSpace.getHeight() + map.getMarginY() * 2)));
 
-                Timer timer = new Timer(1000, e -> {
-                        Player attacker;
+                        frame.add(panel); // <<<<< marked for invokeLater
+                        frame.pack(); // <<<<< marked for invokeLater
+                        frame.setVisible(true); // <<<<< marked for invokeLater
 
-                        if (Math.random() < 0.5) {
-                                attacker = redPlayers[5];
-                        } else {
-                                attacker = bluePlayers[5];
-                        }
-
-                        ball.moveTo(attacker.getXPos(), attacker.getYPos());
-                        panel.repaint();
-                });
-
-                timer.setRepeats(false);
-                timer.start();
-
-                Timer passingTimer = new Timer(2000, e -> {
-                        Player ballHolder = null;
-
-                        for (Player player : redPlayers) {
-                                if (player.hasPossession(ball)) {
-                                        ballHolder = player;
-                                        break;
-                                }
-                        }
-
-                        if (ballHolder == null) {
-                                for (Player player : bluePlayers) {
-                                        if (player.hasPossession(ball)) {
-                                                ballHolder = player;
-                                                break;
-                                        }
-                                }
-                        }
-
-                        if (ballHolder != null) {
-                                ballHolder.pass();
-                                panel.repaint();
-                        }
-                });
-
-                passingTimer.start();
-
-                frame.addWindowListener(
+                        frame.addWindowListener( // <<<<< marked for invokeLater
                                 new WindowAdapter() {
                                         public void windowClosing(WindowEvent we) {
                                                 System.exit(0);
                                         }
                                 });
+
+                        Timer timer = new Timer(1000, e -> {     // <<<<< marked for invokeLater
+                                Player attacker;
+
+                                if (Math.random() < 0.5) {
+                                        attacker = redPlayers[5];
+                                } else {
+                                        attacker = bluePlayers[5];
+                                }
+
+                                ball.moveTo(attacker.getXPos(), attacker.getYPos());
+                                panel.repaint();
+                        });
+
+                        timer.setRepeats(false);                 // <<<<< marked for invokeLater
+                        timer.start();                           // <<<<< marked for invokeLater
+
+                        Timer passingTimer = new Timer(2000, e -> {              // <<<<< marked for invokeLater
+                                Player ballHolder = null;
+
+                                for (Player player : redPlayers) {               // <<<<< marked for invokeLater
+                                        if (player.hasPossession(ball)) {
+                                                ballHolder = player;
+                                                break;
+                                        }
+                                }
+
+                                if (ballHolder == null) {                // <<<<< marked for invokeLater
+                                        for (Player player : bluePlayers) {
+                                                if (player.hasPossession(ball)) {
+                                                        ballHolder = player;
+                                                        break;
+                                                }
+                                        }
+                                }
+
+                                if (ballHolder != null) {                // <<<<< marked for invokeLater
+                                        ballHolder.pass();
+                                        panel.repaint();
+                                }
+                        });
+
+                        passingTimer.start();            // <<<<< marked for invokeLater
+
+                });
         }
 
         private static Player[] loadTeamOrDefault(
