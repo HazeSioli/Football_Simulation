@@ -34,8 +34,8 @@ public class Main {
                 Team blueTeam = new Team("Blue Team", Color.BLUE, bluePlayers);
 
                 Ball ball = new Ball(
-                                playSpace.getWidth() / 2,
-                                playSpace.getHeight() / 2);
+                                playSpace.getLength() / 2,
+                                playSpace.getWidth() / 2);
 
                 for (Player player : redPlayers) {
                         player.setMatchDetails(ball, redTeam);
@@ -47,31 +47,31 @@ public class Main {
 
                 
 
-                EventQueue.invokeLater(() -> {
-                        Frame frame = new Frame("Football Simulation"); // <<<<< marked for invokeLater
-                        SimulationPanel panel = new SimulationPanel( // <<<<< marked for invokeLater
+                EventQueue.invokeLater(() -> {          // <<<<< ensures that the GUI is created on the Event Dispatch Thread (EDT)
+                        Frame frame = new Frame("Football Simulation"); 
+                        SimulationPanel panel = new SimulationPanel( 
                                         map,
                                         redTeam,
                                         blueTeam,
                                         ball);
 
-                        panel.setPreferredSize(         // <<<<< marked for invokeLater
+                        panel.setPreferredSize(
                                         new Dimension(
-                                                        (int) (playSpace.getWidth() + map.getMarginX() * 2),
-                                                        (int) (playSpace.getHeight() + map.getMarginY() * 2)));
+                                                        (int) (playSpace.getLength() + map.getMarginX() * 2),
+                                                        (int) (playSpace.getWidth() + map.getMarginY() * 2)));
 
-                        frame.add(panel); // <<<<< marked for invokeLater
-                        frame.pack(); // <<<<< marked for invokeLater
-                        frame.setVisible(true); // <<<<< marked for invokeLater
+                        frame.add(panel);
+                        frame.pack();
+                        frame.setVisible(true);
 
-                        frame.addWindowListener( // <<<<< marked for invokeLater
+                        frame.addWindowListener(
                                 new WindowAdapter() {
                                         public void windowClosing(WindowEvent we) {
                                                 System.exit(0);
                                         }
                                 });
 
-                        Timer timer = new Timer(1000, e -> {     // <<<<< marked for invokeLater
+                        Timer timer = new Timer(1000, e -> {
                                 Player attacker;
 
                                 if (Math.random() < 0.5) {
@@ -84,20 +84,20 @@ public class Main {
                                 panel.repaint();
                         });
 
-                        timer.setRepeats(false);                 // <<<<< marked for invokeLater
-                        timer.start();                           // <<<<< marked for invokeLater
+                        timer.setRepeats(false);    
+                        timer.start(); 
 
-                        Timer passingTimer = new Timer(2000, e -> {              // <<<<< marked for invokeLater
+                        Timer passingTimer = new Timer(2000, e -> { 
                                 Player ballHolder = null;
 
-                                for (Player player : redPlayers) {               // <<<<< marked for invokeLater
+                                for (Player player : redPlayers) {     
                                         if (player.hasPossession(ball)) {
                                                 ballHolder = player;
                                                 break;
                                         }
                                 }
 
-                                if (ballHolder == null) {                // <<<<< marked for invokeLater
+                                if (ballHolder == null) {              
                                         for (Player player : bluePlayers) {
                                                 if (player.hasPossession(ball)) {
                                                         ballHolder = player;
@@ -106,13 +106,13 @@ public class Main {
                                         }
                                 }
 
-                                if (ballHolder != null) {                // <<<<< marked for invokeLater
+                                if (ballHolder != null) {         
                                         ballHolder.pass();
                                         panel.repaint();
                                 }
                         });
 
-                        passingTimer.start();            // <<<<< marked for invokeLater
+                        passingTimer.start();            
 
                 });
         }

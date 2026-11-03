@@ -68,8 +68,8 @@ public class SimulationPanel extends Panel {
         g.fillRect(
                 marginX,
                 marginY,
-                (int) playSpace.getWidth(),
-                (int) playSpace.getHeight());
+                (int) playSpace.getLength(),
+                (int) playSpace.getWidth());
 
         g.setColor(Color.WHITE);
 
@@ -83,10 +83,10 @@ public class SimulationPanel extends Panel {
         // needs to cast measurements as "(int)" for compatibility
         // g.drawLine(width / 2, 0, width / 2, height);
         g.drawLine(
-                marginX + (int) playSpace.getWidth() / 2,
+                marginX + (int) playSpace.getLength() / 2,
                 marginY + 0,
-                marginX + (int) playSpace.getWidth() / 2,
-                marginY + (int) playSpace.getHeight());
+                marginX + (int) playSpace.getLength() / 2,
+                marginY + (int) playSpace.getWidth());
 
         // DRAWS THE GOALS
         // g.drawRect(0, 175, 150, 300);
@@ -95,14 +95,14 @@ public class SimulationPanel extends Panel {
         g.drawRect(
                 marginX + (int) leftGoal.getX(),
                 marginY + (int) leftGoal.getY(),
-                (int) leftGoal.getWidth(),
-                (int) leftGoal.getHeight());
+                (int) leftGoal.getDepth(),
+                (int) leftGoal.getWidth());
 
         g.drawRect(
                 marginX + (int) rightGoal.getX(),
                 marginY + (int) rightGoal.getY(),
-                (int) rightGoal.getWidth(),
-                (int) rightGoal.getHeight());
+                (int) rightGoal.getDepth(),
+                (int) rightGoal.getWidth());
 
         // g.setColor(Color.RED);
 
