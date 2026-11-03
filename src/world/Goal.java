@@ -5,6 +5,8 @@ package world;
  * Being inside this region alone does not establish a valid score:
  * Entry through the front openings of the goal is required for a score to be
  * valid.
+ * 
+ * all positions and Dimensions are measured in centimeters (cm).
  */
 
 public class Goal {

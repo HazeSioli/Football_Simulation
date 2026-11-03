@@ -6,7 +6,9 @@ package world;
  * prevent players or the ball from moving outside of them.
  * 
  * World Axis: X = Field Length, Y = Field Width
- * Z = Height (not used in this simulation at this time) (but hopefully soon!)
+ * Z = Height (now being used!)
+ * 
+ * All positions and Dimensions are measured in centimeters (cm).
  * 
  */
 
@@ -22,21 +24,21 @@ public class PlaySpace {
         this.length = length;
         this.width = width;
 
-        double goalDepth = 150;
-        double goalWidth = 300;
-        double goalHeight = 244; // Standard goal height in cm (2.44 meters)
+        double goalDepth = 200.0; // Chosen depth of the goal in cm (2 meters), it could be anything really but idk what the standard is. 
+        double goalWidth = 732.0; // Standard goal width in cm (7.32 meters)
+        double goalHeight = 244.0; // Standard goal height in cm (2.44 meters)
 
         double goalY = (width - goalWidth) / 2;
 
         leftGoal = new Goal(
-                0,
+                -goalDepth,
                 goalY,
                 goalDepth,
                 goalWidth,
                 goalHeight);
 
         rightGoal = new Goal(
-                length - goalDepth,
+                length,
                 goalY,
                 goalDepth,
                 goalWidth,

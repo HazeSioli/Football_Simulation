@@ -34,18 +34,41 @@ public class SimulationPanel extends Panel {
                         Player[] players,
                         Color colour,
                         int offsetX,
-                        int offsetY) {
-
-                int playerSize = 24;
+                        int offsetY,
+                        double scale) {
 
                 g.setColor(colour);
 
                 for (Player player : players) {
+                        int centerX = offsetX
+                                        + (int) Math.round(player.getXPos() * scale);
+                        int centerY = offsetY
+                                        + (int) Math.round(player.getYPos() * scale);
+                        int bodySize = Math.max(
+                                        1, (int) Math.round(player.getBodyRadiusCm() * 2 * scale));
+                        int reachSize = Math.max(
+                                        1, (int) Math.round(player.getReachRadiusCm() * 2 * scale));
+
+                        g.setColor(new Color(
+                                        colour.getRed(),
+                                        colour.getGreen(),
+                                        colour.getBlue(),
+                                        51));
+                                        
+
                         g.fillOval(
-                                        offsetX + (int) player.getXPos() - playerSize / 2,
-                                        offsetY + (int) player.getYPos() - playerSize / 2,
-                                        playerSize,
-                                        playerSize);
+                                        centerX - reachSize / 2,
+                                        centerY - reachSize / 2,
+                                        reachSize,
+                                        reachSize);
+
+                        g.setColor(colour);
+
+                        g.fillOval(
+                                        centerX - bodySize / 2,
+                                        centerY - bodySize / 2,
+                                        bodySize,
+                                        bodySize);
                 }
         }
 
@@ -54,8 +77,18 @@ public class SimulationPanel extends Panel {
                 PlaySpace playSpace = map.getPlaySpace();
                 Environment environment = map.getEnvironment();
 
-                int marginX = (int) map.getMarginX();
-                int marginY = (int) map.getMarginY();
+                double worldLength = playSpace.getLength() + map.getMarginX() * 2;
+                double worldWidth = playSpace.getWidth() + map.getMarginY() * 2;
+
+                double scale = Math.min(
+                                getWidth() / worldLength,
+                                getHeight() / worldWidth);
+
+                double viewOffsetX = (getWidth() - worldLength * scale) / 2;
+                double viewOffsetY = (getHeight() - worldWidth * scale) / 2;
+
+                int marginX = (int) Math.round(viewOffsetX + map.getMarginX() * scale);
+                int marginY = (int) Math.round(viewOffsetY + map.getMarginY() * scale);
 
                 g.setColor(environment.getSurroundingTerrain().getDisplayColor());
                 g.fillRect(
@@ -68,8 +101,8 @@ public class SimulationPanel extends Panel {
                 g.fillRect(
                                 marginX,
                                 marginY,
-                                (int) playSpace.getLength(),
-                                (int) playSpace.getWidth());
+                                (int) Math.round(playSpace.getLength() * scale),
+                                (int) Math.round(playSpace.getWidth() * scale));
 
                 g.setColor(Color.WHITE);
 
@@ -83,26 +116,26 @@ public class SimulationPanel extends Panel {
                 // needs to cast measurements as "(int)" for compatibility
                 // g.drawLine(width / 2, 0, width / 2, height);
                 g.drawLine(
-                                marginX + (int) playSpace.getLength() / 2,
-                                marginY + 0,
-                                marginX + (int) playSpace.getLength() / 2,
-                                marginY + (int) playSpace.getWidth());
+                                marginX + (int) Math.round(playSpace.getLength() / 2 * scale),
+                                marginY,
+                                marginX + (int) Math.round(playSpace.getLength() / 2 * scale),
+                                marginY + (int) Math.round(playSpace.getWidth() * scale));
 
                 // DRAWS THE GOALS
                 // g.drawRect(0, 175, 150, 300);
                 // g.drawRect(width - 150, 175, 150, 300);
 
                 g.drawRect(
-                                marginX + (int) leftGoal.getX(),
-                                marginY + (int) leftGoal.getY(),
-                                (int) leftGoal.getDepth(),
-                                (int) leftGoal.getWidth());
+                                marginX + (int) Math.round(leftGoal.getX() * scale),
+                                marginY + (int) Math.round(leftGoal.getY() * scale),
+                                (int) Math.round(leftGoal.getDepth() * scale),
+                                (int) Math.round(leftGoal.getWidth() * scale));
 
                 g.drawRect(
-                                marginX + (int) rightGoal.getX(),
-                                marginY + (int) rightGoal.getY(),
-                                (int) rightGoal.getDepth(),
-                                (int) rightGoal.getWidth());
+                                marginX + (int) Math.round(rightGoal.getX() * scale),
+                                marginY + (int) Math.round(rightGoal.getY() * scale),
+                                (int) Math.round(rightGoal.getDepth() * scale),
+                                (int) Math.round(rightGoal.getWidth() * scale));
 
                 // g.setColor(Color.RED);
 
@@ -111,30 +144,41 @@ public class SimulationPanel extends Panel {
                                 redTeam.getPlayers(),
                                 redTeam.getColor(),
                                 marginX,
-                                marginY);
+                                marginY,
+                                scale);
 
                 drawPlayers(
                                 g,
                                 blueTeam.getPlayers(),
                                 blueTeam.getColor(),
                                 marginX,
-                                marginY);
+                                marginY,
+                                scale);
 
                 // Ball Draw
-                int ballSize = 12;
+                int ballSize = Math.max(
+                        1,
+                        (int) Math.round(ball.getRadiusCm() * 2 * scale));
 
                 g.setColor(Color.WHITE);
                 g.fillOval(
-                                marginX + (int) ball.getXPos() - ballSize / 2,
-                                marginY + (int) ball.getYPos() - ballSize / 2,
+                                marginX + (int) Math.round(ball.getXPos() * scale) - ballSize / 2,
+                                marginY + (int) Math.round(ball.getYPos() * scale) - ballSize / 2,
                                 ballSize,
                                 ballSize);
 
                 g.setColor(Color.BLACK);
                 g.drawOval(
-                                marginX + (int) ball.getXPos() - ballSize / 2,
-                                marginY + (int) ball.getYPos() - ballSize / 2,
+                                marginX + (int) Math.round(ball.getXPos() * scale) - ballSize / 2,
+                                marginY + (int) Math.round(ball.getYPos() * scale) - ballSize / 2,
                                 ballSize,
                                 ballSize);
         }
+
+        // Override the update method to call paint directly, preventing flickering
+        @Override
+        public void update(Graphics g) {
+                paint(g);
+        }
+
 }

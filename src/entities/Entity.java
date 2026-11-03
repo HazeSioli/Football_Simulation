@@ -1,5 +1,9 @@
 package entities;
 
+/**
+ * all positions and Dimensions are measured in centimeters (cm).
+ */
+
 public class Entity {
 
     double xPos;

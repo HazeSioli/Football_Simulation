@@ -10,6 +10,9 @@ public abstract class Player extends Entity {
     double spawnY;
     double spawnZ;
 
+    private double bodyRadiusCm = 30.0; // value chosen as a reasonable approximation of the average human body radius in centimeters
+    private double reachRadiusCm = 100.0; // value chosen as a reasonable approximation of the average human arm reach radius in centimeters
+
     Player(int number, double xPos, double yPos, double zPos) {
         super(xPos, yPos, zPos);
         this.number = number;
@@ -34,5 +37,13 @@ public abstract class Player extends Entity {
     }
 
     public abstract void pass();
+
+    public double getBodyRadiusCm() {
+        return bodyRadiusCm;
+    }
+
+    public double getReachRadiusCm() {
+        return reachRadiusCm;
+    }
 
 }

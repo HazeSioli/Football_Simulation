@@ -56,9 +56,13 @@ public class Main {
                                         ball);
 
                         panel.setPreferredSize(
+                                        new Dimension(1280, 720)); // Set the preferred size of the panel to 1280x720 pixels - this is due to map scaling issues.
+
+                        /* panel.setPreferredSize(
                                         new Dimension(
                                                         (int) (playSpace.getLength() + map.getMarginX() * 2),
                                                         (int) (playSpace.getWidth() + map.getMarginY() * 2)));
+                        */
 
                         frame.add(panel);
                         frame.pack();
