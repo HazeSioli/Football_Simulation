@@ -5,8 +5,8 @@ public class GameMap {
     private PlaySpace playSpace;
     private Environment environment;
 
-    private double marginX;     // World Distances in cm, rather than pixels, to allow for scaling of the map
-    private double marginY;     // World Distances in cm, rather than pixels, to allow for scaling of the map
+    private double marginX; // World Distances in cm, rather than pixels, to allow for scaling of the map
+    private double marginY; // World Distances in cm, rather than pixels, to allow for scaling of the map
 
     public GameMap(MapPreset preset) {
 

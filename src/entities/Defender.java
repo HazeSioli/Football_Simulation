@@ -1,9 +1,22 @@
 package entities;
 
+import behaviour.HoldFormation;
+import world.PlaySpace;
+
 public class Defender extends Player {
 
     public Defender(int number, double xPos, double yPos, double zPos) {
         super(number, xPos, yPos, zPos);
+    }
+
+    public Defender(
+            int number,
+            double xPos,
+            double yPos,
+            double zPos,
+            double maxSpeed,
+            double maxAcceleration) {
+        super(number, xPos, yPos, zPos, maxSpeed, maxAcceleration);
     }
 
     @Override
@@ -20,6 +33,17 @@ public class Defender extends Player {
                 receiver.getYPos(),
                 1000.0,
                 this);
+    }
+
+    @Override
+    public void configureDefaultBehaviour(
+        PlaySpace playSpace, boolean defendingLeft) {
+        setMovementBehaviour(
+                new HoldFormation(
+                        ball,
+                        spawnX,
+                        spawnY,
+                        0.15));
     }
 
 }

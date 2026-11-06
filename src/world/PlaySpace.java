@@ -27,7 +27,8 @@ public class PlaySpace {
         this.width = width;
         this.fieldMarkings = fieldMarkings;
 
-        double goalDepth = 200.0; // Chosen depth of the goal in cm (2 meters), it could be anything really but idk what the standard is. 
+        double goalDepth = 200.0; // Chosen depth of the goal in cm (2 meters), it could be anything really but
+                                  // idk what the standard is.
         double goalWidth = 732.0; // Standard goal width in cm (7.32 meters)
         double goalHeight = 244.0; // Standard goal height in cm (2.44 meters)
 
@@ -46,6 +47,13 @@ public class PlaySpace {
                 goalDepth,
                 goalWidth,
                 goalHeight);
+    }
+
+    public boolean contains(double x, double y) {
+        return x >= 0.0
+                && x <= length
+                && y >= 0.0
+                && y <= width;
     }
 
     public double getLength() {
