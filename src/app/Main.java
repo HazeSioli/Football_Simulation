@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.Timer; // added to try get the ball to Update every n milliseconds
+import javax.swing.JFrame;
 
 import entities.Ball;
 import entities.Player;
@@ -23,20 +24,20 @@ public class Main {
         public static void main(String[] args) {
 
                 GameMap map = new GameMap(MapPreset.DEFAULT);
+
                 PlaySpace playSpace = map.getPlaySpace();
 
-                Frame frame = new Frame("Football Simulation");
+                Player[] redPlayers = loadTeamOrDefault("teams/presets/average.txt", playSpace, true);
 
-                Player[] redPlayers = loadTeamOrDefault("red-team.txt", playSpace, true);
-
-                Player[] bluePlayers = loadTeamOrDefault("blue-team.txt", playSpace, false);
+                Player[] bluePlayers = loadTeamOrDefault("teams/presets/average.txt", playSpace, false);
 
                 Team redTeam = new Team("Red Team", Color.RED, redPlayers);
                 Team blueTeam = new Team("Blue Team", Color.BLUE, bluePlayers);
 
                 Ball ball = new Ball(
+                                playSpace.getLength() / 2,
                                 playSpace.getWidth() / 2,
-                                playSpace.getHeight() / 2);
+                                0.0);
 
                 for (Player player : redPlayers) {
                         player.setMatchDetails(ball, redTeam);
@@ -46,70 +47,110 @@ public class Main {
                         player.setMatchDetails(ball, blueTeam);
                 }
 
-                SimulationPanel panel = new SimulationPanel(
-                                map,
-                                redTeam,
-                                blueTeam,
-                                ball);
+                EventQueue.invokeLater(() -> { // <<<<< ensures that the GUI is created on the Event Dispatch Thread
+                                               // (EDT)
+                        JFrame frame = new JFrame("Football Simulation");
+                        SimulationPanel panel = new SimulationPanel(
+                                        map,
+                                        redTeam,
+                                        blueTeam,
+                                        ball);
 
-                panel.setPreferredSize(
-                                new Dimension(
-                                                (int) (playSpace.getWidth() + map.getMarginX() * 2),
-                                                (int) (playSpace.getHeight() + map.getMarginY() * 2)));
+                        panel.setPreferredSize(
+                                        new Dimension(1280, 720)); // Set the preferred size of the panel to 1280x720 pixels - this is due to map scaling issues.
 
-                frame.add(panel);
-                frame.pack();
-                frame.setVisible(true);
+                        /* panel.setPreferredSize(
+                                        new Dimension(
+                                                        (int) (playSpace.getLength() + map.getMarginX() * 2),
+                                                        (int) (playSpace.getWidth() + map.getMarginY() * 2)));
+                        */
 
-                Timer timer = new Timer(1000, e -> {
-                        Player attacker;
+                        frame.add(panel);
+                        frame.pack();
+                        frame.setVisible(true);
 
-                        if (Math.random() < 0.5) {
-                                attacker = redPlayers[5];
-                        } else {
-                                attacker = bluePlayers[5];
-                        }
+                        frame.addWindowListener(
+                                        new WindowAdapter() {
+                                                public void windowClosing(WindowEvent we) {
+                                                        System.exit(0);
+                                                }
+                                        });
 
-                        ball.moveTo(attacker.getXPos(), attacker.getYPos());
-                        panel.repaint();
-                });
+                        Timer timer = new Timer(1000, e -> {
+                                Player attacker;
 
-                timer.setRepeats(false);
-                timer.start();
-
-                Timer passingTimer = new Timer(2000, e -> {
-                        Player ballHolder = null;
-
-                        for (Player player : redPlayers) {
-                                if (player.hasPossession(ball)) {
-                                        ballHolder = player;
-                                        break;
+                                if (Math.random() < 0.5) {
+                                        attacker = redPlayers[5];
+                                } else {
+                                        attacker = bluePlayers[5];
                                 }
-                        }
 
-                        if (ballHolder == null) {
-                                for (Player player : bluePlayers) {
+                                ball.moveTo(attacker.getXPos(), attacker.getYPos(), attacker.getZPos());
+                                panel.repaint();
+                        });
+
+                        timer.setRepeats(false);
+                        timer.start();
+
+                        Timer passingTimer = new Timer(2000, e -> {
+                                Player ballHolder = null;
+
+                                for (Player player : redPlayers) {
                                         if (player.hasPossession(ball)) {
                                                 ballHolder = player;
                                                 break;
                                         }
                                 }
-                        }
 
-                        if (ballHolder != null) {
-                                ballHolder.pass();
-                                panel.repaint();
-                        }
-                });
-
-                passingTimer.start();
-
-                frame.addWindowListener(
-                                new WindowAdapter() {
-                                        public void windowClosing(WindowEvent we) {
-                                                System.exit(0);
+                                if (ballHolder == null) {
+                                        for (Player player : bluePlayers) {
+                                                if (player.hasPossession(ball)) {
+                                                        ballHolder = player;
+                                                        break;
+                                                }
                                         }
-                                });
+                                }
+
+                                if (ballHolder != null) {
+                                        ballHolder.pass();
+                                        panel.repaint();
+                                }
+                        });
+
+                        passingTimer.start();
+
+
+                        Timer movementTimer = new Timer(20, e -> {
+                                ball.update(0.02); // Update the ball's position every 20 milliseconds (0.02 seconds)
+                                
+                                if (ball.isMoving()){
+                                        boolean received = receiveBall(ball, redPlayers);
+                                        
+                                        if (!received) {
+                                                received = receiveBall(ball, bluePlayers);
+                                        }
+                                }
+
+                                panel.repaint();
+                        });
+
+                        movementTimer.start();
+
+                });
+        }
+
+        private static boolean receiveBall(Ball ball, Player[] players) {
+                for (Player player : players) {
+                        if (player != ball.getLastKicker() && player.canReceive(ball)) {
+                                ball.stop();
+                                ball.moveTo(
+                                        player.getXPos(),
+                                        player.getYPos(),
+                                        player.getZPos());
+                                        return true;
+                        }
+                }
+                return false;
         }
 
         private static Player[] loadTeamOrDefault(
