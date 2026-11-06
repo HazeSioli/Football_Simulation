@@ -60,7 +60,9 @@ public class TeamComp {
                                                 2,
                                                 (playSpace.getLength() * 4) / 5,
                                                 playSpace.getWidth() / 3,
-                                                0.0),
+                                                0.0,
+                                                400.0,
+                                                250),
 
                                 new Defender(
                                                 3,

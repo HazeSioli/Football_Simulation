@@ -7,25 +7,47 @@ public class Ball extends Entity {
     private double velocityY = 0.0;
     private double velocityZ = 0.0;
     private Player lastKicker;
+    private Player lastToucher;
 
     public Ball(double xPos, double yPos, double zPos) {
         super(xPos, yPos, zPos);
     }
 
-    public double getRadiusCm() {
-        return radiusCm;
-    }
+    public void update(double deltaSeconds, double rollingDeceleration) {
+        // xPos += velocityX * deltaSeconds;
+        // yPos += velocityY * deltaSeconds;
+        // zPos += velocityZ * deltaSeconds;
 
-    void move(double x, double y, double z) {
-        xPos += x;
-        yPos += y;
-        zPos += z;
-    }
+        if (deltaSeconds <= 0.0) {
+            return;
+        }
 
-    public void update(double deltaSeconds) {
-        xPos += velocityX * deltaSeconds;
-        yPos += velocityY * deltaSeconds;
+        double speed = Math.hypot(velocityX, velocityY);
+
+        // only apply ground resistance/deceleration while ball is grounded.
+        if (speed > 0.0 && zPos == 0.0 && velocityZ == 0.0) {
+            double movingTime = deltaSeconds;
+
+            if (rollingDeceleration > 0.0) {
+                movingTime = Math.min(deltaSeconds, speed / rollingDeceleration);
+            }
+
+            double distance = speed * movingTime - 0.5 * rollingDeceleration * movingTime * movingTime;
+
+            xPos += velocityX / speed * distance;
+            yPos += velocityY / speed * distance;
+
+            double newSpeed = Math.max(0.0, speed - rollingDeceleration * deltaSeconds);
+
+            velocityX = velocityX / speed * newSpeed;
+            velocityY = velocityY / speed * newSpeed;
+        } else {
+            xPos += velocityX * deltaSeconds;
+            yPos += velocityY * deltaSeconds;
+        }
+
         zPos += velocityZ * deltaSeconds;
+
     }
 
     public void kickTowards(double targetX, double targetY, double speedCmPerSecond, Player kicker) {
@@ -34,6 +56,7 @@ public class Ball extends Entity {
         double distance = Math.hypot(directionX, directionY);
 
         lastKicker = kicker;
+        recordTouch(kicker);
 
         if (distance == 0) {
             velocityX = 0;
@@ -55,10 +78,10 @@ public class Ball extends Entity {
         velocityZ = 0;
     }
 
-    public boolean isMoving() {
-        return velocityX != 0
-                || velocityY != 0
-                || velocityZ != 0;
+    void move(double x, double y, double z) {
+        xPos += x;
+        yPos += y;
+        zPos += z;
     }
 
     public void moveTo(double x, double y, double z) {
@@ -67,8 +90,26 @@ public class Ball extends Entity {
         zPos = z;
     }
 
+    public boolean isMoving() {
+        return velocityX != 0
+                || velocityY != 0
+                || velocityZ != 0;
+    }
+
+    public double getRadiusCm() {
+        return radiusCm;
+    }
+
     public Player getLastKicker() {
         return lastKicker;
+    }
+
+    public Player getLastToucher() {
+        return lastToucher;
+    }
+
+    public void recordTouch(Player player) {
+        lastToucher = player;
     }
 
 }

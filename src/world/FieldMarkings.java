@@ -13,7 +13,7 @@ public class FieldMarkings {
     private final double penaltyAreaDepth = 1650.0;
     private final double goalAreaDepth = 550.0;
     private final double cornerArcRadius = 100.0;
-    
+
     public double getCentreCircleRadius() {
         return centreCircleRadius;
     }

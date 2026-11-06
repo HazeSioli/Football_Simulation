@@ -95,8 +95,8 @@ public class Match {
             return;
         }
 
-        if(scoringTeam == null
-            || (scoringTeam != redTeam && scoringTeam != blueTeam)) {
+        if (scoringTeam == null
+                || (scoringTeam != redTeam && scoringTeam != blueTeam)) {
             throw new IllegalArgumentException("Invalid scoring team.");
         }
 
