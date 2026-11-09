@@ -73,7 +73,7 @@ public class Main {
                         SimulationSetup.setupAttackingDemo(
                                         ball, redPlayers, bluePlayers, map);
 
-                        blueTeam.assignChallenger(ball, map, 200.0, playSpace.getWidth() /2);
+                        blueTeam.assignChallenger(ball, map, 200.0, playSpace.getWidth() / 2);
 
                         Timer movementTimer = new Timer(20, e -> {
 
@@ -95,6 +95,21 @@ public class Main {
 
                                 ball.update(0.02, surface.getRollingDeceleration());// Update the ball's position every
                                 // 20 milliseconds (0.02 seconds)
+
+                                boolean goalScored = SimulationSetup.isBallInGoal(ball, playSpace.getLeftGoal())
+                                                || SimulationSetup.isBallInGoal(ball, playSpace.getRightGoal());
+
+                                if (goalScored) {
+                                        blueTeam.releaseChallenger();
+
+                                        SimulationSetup.resetDemo(
+                                                        ball, redPlayers, bluePlayers, map);
+
+                                        blueTeam.assignChallenger(
+                                                        ball, map, 200.0, playSpace.getWidth() / 2);
+
+                                        System.out.println("Goal! Restarting simulation.");
+                                }
 
                                 panel.repaint();
                         });
