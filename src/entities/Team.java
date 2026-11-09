@@ -23,7 +23,7 @@ public class Team {
     }
 
     public Optional<Player> chooseChallenger(Ball ball) {
-        return Arrays.stream(players)
+        return Arrays.stream(players).parallel()
                 .filter(player -> player != null)
                 .filter(player -> !(player instanceof Goalkeeper))
                 .min(Comparator.comparingDouble(player -> Math.hypot(
