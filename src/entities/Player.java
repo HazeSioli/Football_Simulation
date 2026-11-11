@@ -29,6 +29,8 @@ public abstract class Player extends Entity {
     private double touchCooldownRemaining = 0.0;
     private double dribbleLeadSpeed = 100.0; // cm/second above the forward running speed.
     private final double touchRecoverySeconds = 0.3; // temporary testing value :)
+    private double passCooldownRemaining = 0.0;
+    private final double passCooldownSeconds = 3.0;
 
     // Player Data
 
@@ -83,6 +85,7 @@ public abstract class Player extends Entity {
         }
 
         touchCooldownRemaining = Math.max(0.0, touchCooldownRemaining - deltaSeconds);
+        passCooldownRemaining = Math.max(0.0, passCooldownRemaining - deltaSeconds);
 
         if (movementBehaviour != null) {
             movementBehaviour.update(this, deltaSeconds);
@@ -193,8 +196,13 @@ public abstract class Player extends Entity {
     }
 
     public boolean tryPassTo(
+
             Player receiver,
             double rollingDeceleration) {
+
+        if (passCooldownRemaining > 0.0) {
+            return false;
+        }
         if (ball == null || receiver == null || receiver == this
                 || team == null || receiver.team != team) {
             return false;
@@ -219,7 +227,16 @@ public abstract class Player extends Entity {
                 arrivalSpeed * arrivalSpeed
                         + 2.0 * rollingDeceleration * distance);
 
-        return tryKickTowards(receiver.getXPos(), receiver.getYPos(), launchSpeed);
+        boolean passed = tryKickTowards(
+                receiver.getXPos(),
+                receiver.getYPos(),
+                launchSpeed);
+
+        if (passed) {
+            passCooldownRemaining = passCooldownSeconds;
+        }
+
+        return passed;
     }
 
     public Optional<Player> choosePassReceiver(
@@ -236,9 +253,9 @@ public abstract class Player extends Entity {
             return Optional.empty();
         }
 
-        double currentDistance = Math.hypot(
-                targetX - xPos,
-                targetY - yPos);
+        // double currentDistance = Math.hypot(
+        // targetX - xPos,
+        // targetY - yPos);
 
         return Arrays.stream(team.getPlayers())
                 .filter(candidate -> candidate != null)
@@ -246,12 +263,11 @@ public abstract class Player extends Entity {
                 .filter(candidate -> Math.hypot(
                         candidate.getXPos() - xPos,
                         candidate.getYPos() - yPos) > 100.0)
-                .filter(candidate -> Math.hypot(
-                        targetX - candidate.getXPos(),
-                        targetY - candidate.getYPos()) 
-                        <= currentDistance - minimumProgressCm)
-                .min(Comparator.comparingDouble(candidate ->
-                    Math.hypot(
+                // .filter(candidate -> Math.hypot(
+                // targetX - candidate.getXPos(),
+                // targetY - candidate.getYPos())
+                // <= currentDistance - minimumProgressCm)
+                .min(Comparator.comparingDouble(candidate -> Math.hypot(
                         candidate.getXPos() - xPos,
                         candidate.getYPos() - yPos)));
     }

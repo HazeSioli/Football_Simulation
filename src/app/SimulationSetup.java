@@ -9,6 +9,7 @@ import javax.swing.Timer; // added to try get the ball to Update every n millise
 import ui.SimulationPanel;
 import behaviour.ChallengeForBall;
 import behaviour.AttackWithBall;
+import world.Goal;
 
 public class SimulationSetup {
 
@@ -105,7 +106,44 @@ public class SimulationSetup {
                         playSpace.getWidth() / 2));
     }
 
-    /* OLD PASSING CODE
+    public static boolean isBallInGoal(Ball ball, Goal goal) {
+        double radius = ball.getRadiusCm();
+
+        return ball.getXPos() - radius >= goal.getX()
+                && ball.getXPos() + radius <= goal.getX() + goal.getDepth()
+                && ball.getYPos() - radius >= goal.getY()
+                && ball.getYPos() + radius <= goal.getY() + goal.getWidth()
+                && ball.getZPos() + radius <= goal.getHeight();
+    }
+
+    public static void resetDemo(
+            Ball ball,
+            Player[] redPlayers,
+            Player[] bluePlayers,
+            GameMap map) {
+
+        ball.stop();
+        ball.moveTo(
+                map.getPlaySpace().getLength() / 2,
+                map.getPlaySpace().getWidth() / 2,
+                0.0);
+        ball.recordTouch(null);
+
+        for (Player player : redPlayers) {
+            player.resetPosition();
+            player.restoreDefaultBehaviour();
+        }
+
+        for (Player player : bluePlayers) {
+            player.resetPosition();
+            player.restoreDefaultBehaviour();
+        }
+
+        setupAttackingDemo(ball, redPlayers, bluePlayers, map);
+    }
+
+    /*
+     * OLD PASSING CODE
      * private static boolean receiveBall(Ball ball, Player[] players) {
      * for (Player player : players) {
      * if (player != ball.getLastKicker() && player.canReceive(ball)) {
