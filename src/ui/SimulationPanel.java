@@ -10,6 +10,10 @@ import world.Environment;
 import world.GameMap;
 import world.FieldMarkings;
 import javax.swing.JPanel;
+import simulation.Match;
+
+// responsible for drawing the world itself.
+// base unit of measurement is cm, which are then converted relative to the size of the screen.
 
 public class SimulationPanel extends JPanel {
 
@@ -18,17 +22,20 @@ public class SimulationPanel extends JPanel {
         private Team redTeam;
         private Team blueTeam;
         private Ball ball;
+        private final HUD hud;
 
         public SimulationPanel(
                         GameMap map,
                         Team redTeam,
                         Team blueTeam,
-                        Ball ball) {
+                        Ball ball,
+                        Match match) {
 
                 this.map = map;
                 this.redTeam = redTeam;
                 this.blueTeam = blueTeam;
                 this.ball = ball;
+                this.hud = new HUD(redTeam, blueTeam, match);
         }
 
         private void drawPlayers(
@@ -256,6 +263,12 @@ public class SimulationPanel extends JPanel {
                                 marginY + (int) Math.round(ball.getYPos() * scale) - ballSize / 2,
                                 ballSize,
                                 ballSize);
+
+
+                double leftGoalEdge = marginX + leftGoal.getX() * scale;
+                double rightGoalEdge = marginX + (rightGoal.getX() + rightGoal.getDepth()) * scale;
+
+                hud.draw(g, getWidth(), getHeight(), leftGoalEdge, rightGoalEdge);
         }
 
 }

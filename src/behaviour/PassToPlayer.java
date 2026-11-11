@@ -5,6 +5,9 @@ import entities.Player;
 import world.GameMap;
 import world.Terrain;
 
+// Approach the ball; attempt to pass ball to chosen teammate reciever.
+// accounts for resistance in terrain.
+
 public class PassToPlayer implements MovementBehaviour {
 
     private final Ball ball;

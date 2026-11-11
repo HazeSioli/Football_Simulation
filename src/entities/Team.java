@@ -22,6 +22,8 @@ public class Team {
         this.players = players;
     }
 
+    // Finds the nearest *non-Goalkeeper* from the ball. if no valid targets apply,
+    // then returns an empty Optional (empty container)
     public Optional<Player> chooseChallenger(Ball ball) {
         return Arrays.stream(players).parallel()
                 .filter(player -> player != null)
@@ -31,13 +33,15 @@ public class Team {
                         player.getYPos() - ball.getYPos())));
     }
 
+    // responsible for assigning challenging behaviour, such as ChallengeForBall.
     public void assignChallenger(
             Ball ball,
             GameMap map,
             double attackTargetX,
             double attackTargetY) {
 
-        releaseChallenger();
+        releaseChallenger(); // backup/safeguard; restores default behaviour IF they are still using their
+                             // assigned challenge behaviour.
 
         Optional<Player> choice = chooseChallenger(ball);
 
@@ -53,6 +57,8 @@ public class Team {
         }
     }
 
+    // restores default IF behaviour is exactly the same; allows future behavioural
+    // changes.
     public void releaseChallenger() {
         if (nominatedChallenger != null
                 && nominatedChallenger.getMovementBehaviour() == nominatedChallengeBehaviour) {

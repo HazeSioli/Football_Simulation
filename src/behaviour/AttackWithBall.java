@@ -8,6 +8,9 @@ import world.GameMap;
 import world.Terrain;
 import world.Goal;
 
+// allows coordination of attacking decisons by the players.
+// whether that is to shoot at the goal when near, to pass to ally when pressured, or to just run it down.
+
 public class AttackWithBall implements MovementBehaviour {
 
     private final double targetX;
@@ -30,7 +33,8 @@ public class AttackWithBall implements MovementBehaviour {
 
     @Override
     public void update(Player player, double deltaSeconds) {
-        if (player.wasLastTouchedByOpponent()) {
+        if (player.wasLastTouchedByOpponent()) { // if an OPPONENT touched the ball last, then immediately change
+                                                 // behaviour to CHALLENGING.
             MovementBehaviour defending = new ChallengeForBall(
                     ball,
                     map,
@@ -57,11 +61,13 @@ public class AttackWithBall implements MovementBehaviour {
                 goalX - ball.getXPos(),
                 goalY - ball.getYPos());
 
+        // attempts to make the shot IF within 1800cm of the goal's center, if the
+        // player can reach/touch the ball
         if (distanceToGoal <= 1800.0 && player.canTouch(ball)) {
             boolean shot = player.tryKickTowards(
                     goalX,
                     goalY,
-                    1500.0);
+                    1500.0); // current shot speed!
 
             if (shot) {
                 player.restoreDefaultBehaviour();
@@ -70,6 +76,8 @@ public class AttackWithBall implements MovementBehaviour {
             }
         }
 
+        // if opponent is within 500cm / 5m, considers passing if the active player has
+        // the ball/can reach it.
         if (player.canTouch(ball) && player.isUnderPressure(500.0)) {
             Optional<Player> choice = player.choosePassReceiver(
                     targetX,
@@ -90,7 +98,8 @@ public class AttackWithBall implements MovementBehaviour {
                 boolean passed = player.tryPassTo(
                         receiver, surface.getRollingDeceleration());
 
-                if (passed) {
+                if (passed) { // the receievr approaches the pass, attacking. ball passer switches to their
+                              // new anchor position.
                     receiver.setMovementBehaviour(
                             new ReceiveBall(
                                     ball,
@@ -110,6 +119,7 @@ public class AttackWithBall implements MovementBehaviour {
             }
         }
 
+        // behaviour to fallback on, not the default behaviour of a player.
         dribbling.update(player, deltaSeconds);
     }
 }

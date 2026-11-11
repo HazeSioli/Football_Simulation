@@ -32,7 +32,8 @@ public abstract class Player extends Entity {
     private double passCooldownRemaining = 0.0;
     private final double passCooldownSeconds = 3.0;
 
-    // Player Data
+    // Player Data -- shared between all soccer players.
+    // Combines Movement, as well as behaviours and ball interactions.
 
     Player(int number, double xPos, double yPos, double zPos) {
         this(number, xPos, yPos, zPos, 500.0, 300.0);
@@ -64,6 +65,8 @@ public abstract class Player extends Entity {
         this.movementBehaviour = movementBehaviour;
     }
 
+    // determines default behaviour based on team role (at the moment default while
+    // players lack individual stats).
     public void initialiseDefaultBehaviour(
             PlaySpace playSpace, boolean defendingLeft) {
         configureDefaultBehaviour(playSpace, defendingLeft);
@@ -84,13 +87,15 @@ public abstract class Player extends Entity {
             return;
         }
 
+        // kicking/ball interaction cooldown so they don't spam kick every frame they
+        // get.
         touchCooldownRemaining = Math.max(0.0, touchCooldownRemaining - deltaSeconds);
         passCooldownRemaining = Math.max(0.0, passCooldownRemaining - deltaSeconds);
 
         if (movementBehaviour != null) {
             movementBehaviour.update(this, deltaSeconds);
         } else {
-            updateMovement(0.0, 0.0, 0.0, deltaSeconds);
+            updateMovement(0.0, 0.0, 0.0, deltaSeconds); // slows the player down
         }
     }
 
@@ -99,6 +104,8 @@ public abstract class Player extends Entity {
 
     // Player Movement Data
 
+    // sets a target position that the player will try to move towards at their
+    // maximum speed.
     public void moveTowards(
             double targetX,
             double targetY,
@@ -106,7 +113,8 @@ public abstract class Player extends Entity {
         double directionX = targetX - xPos;
         double directionY = targetY - yPos;
         double distance = Math.hypot(directionX, directionY);
-        double targetAccuracyCm = 50.0;
+        double targetAccuracyCm = 50.0; // determines the threshold of accuracy to their desired location (50.0 = 50 cm,
+                                        // so within 0.5m accuracy)
 
         if (distance <= targetAccuracyCm) {
             updateMovement(0.0, 0.0, 0.0, deltaSeconds);
@@ -122,6 +130,8 @@ public abstract class Player extends Entity {
                 deltaSeconds);
     }
 
+    // Reduces speed as they approach their target location; akin to Ease Out.
+    // Helpful for positioning.
     public void arriveTowards(
             double targetX,
             double targetY,
@@ -159,6 +169,8 @@ public abstract class Player extends Entity {
 
     // Game Logic, Getters/Setters
 
+    // horizontal reach + verticality for instnaces where the ball is airborne (not
+    // yet implemented)
     public boolean canTouch(Ball ball) {
         double horizontalDistance = Math.hypot(
                 ball.getXPos() - xPos,
@@ -167,6 +179,8 @@ public abstract class Player extends Entity {
                 && Math.abs(ball.getZPos() - zPos) <= ball.getRadiusCm();
     }
 
+    // requires the player to be in range of the ball; stops and records the touch
+    // of the ball, but affected by Cooldowns/Recovery.
     public boolean tryControlBall() {
         if (ball == null
                 || touchCooldownRemaining > 0.0
@@ -195,6 +209,8 @@ public abstract class Player extends Entity {
         return true;
     }
 
+    // player tries to calc the required power/speed at which the ball must be to
+    // reach a target location.
     public boolean tryPassTo(
 
             Player receiver,
@@ -239,6 +255,8 @@ public abstract class Player extends Entity {
         return passed;
     }
 
+    // controls who the teammate they will pass the ball to is if more than 1m away.
+    // only selects nearest ELIGIBLE teammate.
     public Optional<Player> choosePassReceiver(
             double targetX,
             double targetY,
@@ -257,6 +275,8 @@ public abstract class Player extends Entity {
         // targetX - xPos,
         // targetY - yPos);
 
+        // filter is currently disabled somewhat. would change targeting priority based
+        // on proximity to attacker.
         return Arrays.stream(team.getPlayers())
                 .filter(candidate -> candidate != null)
                 .filter(candidate -> candidate != this)
@@ -272,6 +292,8 @@ public abstract class Player extends Entity {
                         candidate.getYPos() - yPos)));
     }
 
+    // checks if opponent is close -- if so they may kick ball to teammate for
+    // support.
     public boolean isUnderPressure(double distanceCm) {
         if (!Double.isFinite(distanceCm) || distanceCm < 0.0) {
             throw new IllegalArgumentException(
@@ -289,6 +311,7 @@ public abstract class Player extends Entity {
                         opponent.getYPos() - yPos) <= distanceCm);
     }
 
+    // ball touch history. important for game rules and logic!
     public boolean wasLastTouchedByOpponent() {
         if (ball == null || opposingTeam == null) {
             return false;
@@ -301,6 +324,8 @@ public abstract class Player extends Entity {
                         .anyMatch(opponent -> opponent == lastToucher);
     }
 
+    // soccer players know how hard to kick a ball along the ground
+    // this is a natural thing to soccer players, so it's something they can do.
     public double calculateGroundKickSpeed(
             double distanceCm,
             double rollingDeceleration) {
@@ -315,6 +340,7 @@ public abstract class Player extends Entity {
         return Math.sqrt(2.0 * rollingDeceleration * distanceCm);
     }
 
+    // can recieve the ball.
     public boolean canReceive(Ball ball) {
         double horizontalDistance = Math.hypot(ball.getXPos() - xPos, ball.getYPos() - yPos);
 
@@ -322,6 +348,7 @@ public abstract class Player extends Entity {
                 && Math.abs(ball.getZPos() - zPos) <= ball.getRadiusCm();
     }
 
+    // Has the ball while not moving.
     public boolean hasPossession(Ball ball) {
         return !ball.isMoving()
                 && xPos == ball.getXPos()
@@ -331,7 +358,7 @@ public abstract class Player extends Entity {
 
     public abstract void pass();
 
-    // Spawn point
+    // Spawn point - restores spawn positions to Player. negates velocity.
     public void resetPosition() {
         movement.stop(); // deletes any momentum :)
         touchCooldownRemaining = 0.0;
@@ -362,6 +389,10 @@ public abstract class Player extends Entity {
 
     public Team getOpposingTeam() {
         return opposingTeam;
+    }
+
+    public int getNumber() {
+        return number;
     }
 
 }

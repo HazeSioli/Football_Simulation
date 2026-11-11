@@ -2,6 +2,8 @@ package world;
 
 import java.awt.Color;
 
+// 
+
 public class Environment {
 
     private Terrain playingTerrain;

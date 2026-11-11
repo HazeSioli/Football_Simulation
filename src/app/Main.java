@@ -14,11 +14,16 @@ import entities.TeamComp;
 import entities.TeamLoader;
 
 import ui.SimulationPanel;
+import simulation.Match;
 
 import world.GameMap;
 import world.MapPreset;
 import world.PlaySpace;
 import world.Terrain;
+
+// Start the game from Main
+// "WELCOME TO THE WORLD", as they say.
+
 
 public class Main {
 
@@ -35,6 +40,8 @@ public class Main {
                                 playSpace.getLength() / 2,
                                 playSpace.getWidth() / 2,
                                 0.0);
+
+                Match match = new Match(redTeam, blueTeam, ball);
 
                 for (Player player : redPlayers) {
                         player.setMatchDetails(ball, redTeam, blueTeam);
@@ -53,7 +60,8 @@ public class Main {
                                         map,
                                         redTeam,
                                         blueTeam,
-                                        ball);
+                                        ball,
+                                        match);
 
                         panel.setPreferredSize(
                                         new Dimension(1280, 720)); // Set the preferred size of the panel to 1280x720
@@ -75,6 +83,7 @@ public class Main {
 
                         blueTeam.assignChallenger(ball, map, 200.0, playSpace.getWidth() / 2);
 
+                        // EDT; advances players and ball at a fixed rate of 0.02 SIMULATED seconds, per callback. (its requested every 20ms)
                         Timer movementTimer = new Timer(20, e -> {
 
                                 for (Player player : redPlayers) {
@@ -96,10 +105,27 @@ public class Main {
                                 ball.update(0.02, surface.getRollingDeceleration());// Update the ball's position every
                                 // 20 milliseconds (0.02 seconds)
 
-                                boolean goalScored = SimulationSetup.isBallInGoal(ball, playSpace.getLeftGoal())
-                                                || SimulationSetup.isBallInGoal(ball, playSpace.getRightGoal());
+
+                                // Entered Goal determines the scoring team.
+                                boolean inLeftGoal = SimulationSetup.isBallInGoal(ball, playSpace.getLeftGoal());
+                                boolean inRightGoal = SimulationSetup.isBallInGoal(ball, playSpace.getRightGoal());
+
+                                boolean goalScored = inLeftGoal || inRightGoal;
 
                                 if (goalScored) {
+
+                                        Team scoringTeam = inRightGoal ? redTeam : blueTeam;
+                                        Player lastTouchedBy = ball.getLastToucher();
+                                        boolean ownGoal = lastTouchedBy != null
+                                                        && java.util.Arrays.asList(scoringTeam.getPlayers())
+                                                                        .contains(lastTouchedBy) == false;
+
+                                        match.recordGoal(
+                                                        lastTouchedBy,
+                                                        scoringTeam,
+                                                        null,
+                                                        ownGoal);
+
                                         blueTeam.releaseChallenger();
 
                                         SimulationSetup.resetDemo(
@@ -116,9 +142,12 @@ public class Main {
 
                         movementTimer.start();
 
+                        match.start();
+
                 });
         }
 
+        // if there are failures in loading/calidating the custom teams, uses default teams instead.
         private static Player[] loadTeamOrDefault(
                         String filename,
                         PlaySpace playSpace,

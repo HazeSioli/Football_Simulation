@@ -14,9 +14,9 @@ public class Movement {
     private final double maxAcceleration;
 
     public Movement(double maxSpeed, double maxAcceleration) {
-        if (!Double.isFinite(maxSpeed) || maxSpeed < 0.0
+        if (!Double.isFinite(maxSpeed) || maxSpeed < 0.0 // Speed = cm/s
                 || !Double.isFinite(maxAcceleration)
-                || maxAcceleration < 0.0) {
+                || maxAcceleration < 0.0) { // Accel = cm/s^2
             throw new IllegalArgumentException("Movement limits must be finite and non-negative!");
         }
 
@@ -36,6 +36,7 @@ public class Movement {
         double targetSpeed = Math.sqrt(desiredVelocityX * desiredVelocityX + desiredVelocityY * desiredVelocityY
                 + desiredVelocityZ * desiredVelocityZ);
 
+        // limits speed while preserving the desired direction.
         if (targetSpeed > maxSpeed) {
             double scale = maxSpeed / targetSpeed;
             desiredVelocityX *= scale;
@@ -49,6 +50,7 @@ public class Movement {
 
         double changeMagnitude = Math.sqrt(changeX * changeX + changeY * changeY + changeZ * changeZ);
 
+        // limits changes in velocity == more gradual acceleration/stopping/turning.
         double maxChange = maxAcceleration * deltaSeconds;
 
         if (changeMagnitude > maxChange) {
@@ -64,6 +66,7 @@ public class Movement {
 
     }
 
+    // hard reset on velocity
     public void stop() {
         velocityX = 0.0;
         velocityY = 0.0;
