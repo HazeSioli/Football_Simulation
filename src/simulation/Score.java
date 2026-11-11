@@ -1,5 +1,8 @@
 package simulation;
 
+// stores the values for both teams' goals. increments, resets. 
+// is not the detector of goals.
+
 public class Score {
 
     private int redScore;

@@ -6,6 +6,8 @@ import entities.Team;
 
 import java.util.ArrayList;
 
+// This Class manages events and things pertaining to the successful running of the Match itself.
+
 public class Match {
 
     private Team redTeam;
@@ -15,10 +17,8 @@ public class Match {
     private GameState gameState;
     private Ruleset ruleset;
 
-    
     private ArrayList<GoalEvent> goalEvents;
 
-    
     public Match(Team redTeam, Team blueTeam, Ball ball) {
 
         this.redTeam = redTeam;
@@ -28,13 +28,10 @@ public class Match {
         this.gameState = new GameState(
                 redTeam,
                 blueTeam,
-                ball
-        );
+                ball);
         this.ruleset = new Ruleset();
         this.goalEvents = new ArrayList<>();
     }
-
-    
 
     public void start() {
 
@@ -45,8 +42,6 @@ public class Match {
         }
     }
 
-    
-
     public void pause() {
 
         if (gameState.isRunning() && !gameState.isPaused()) {
@@ -56,7 +51,6 @@ public class Match {
         }
     }
 
-    
     public void resume() {
 
         if (gameState.isRunning() && gameState.isPaused()) {
@@ -65,7 +59,6 @@ public class Match {
             System.out.println("Match resumed.");
         }
     }
-
 
     public void end() {
 
@@ -77,13 +70,11 @@ public class Match {
                     "Final Score: "
                             + gameState.getRedScore()
                             + " - "
-                            + gameState.getBlueScore()
-            );
+                            + gameState.getBlueScore());
         }
     }
 
-   
-
+    // advance time ONLY...! if the clock is not stopped (the game is running/unpaused).
     public void update(int seconds) {
 
         if (!gameState.isRunning()) {
@@ -97,16 +88,19 @@ public class Match {
         gameState.updateTime(seconds);
     }
 
-    
-
     public void recordGoal(
             Player scorer,
             Team scoringTeam,
             Player assister,
             boolean ownGoal) {
 
-        if (!gameState.isRunning()) {
+        if (!gameState.isRunning() || gameState.isPaused()) {
             return;
+        }
+
+        if (scoringTeam == null
+                || (scoringTeam != redTeam && scoringTeam != blueTeam)) {
+            throw new IllegalArgumentException("Invalid scoring team.");
         }
 
         GoalEvent goalEvent = new GoalEvent(
@@ -114,12 +108,10 @@ public class Match {
                 scoringTeam,
                 assister,
                 gameState.getElapsedTime(),
-                ownGoal
-        );
+                ownGoal);
 
         goalEvents.add(goalEvent);
 
-       
         if (scoringTeam == redTeam) {
             gameState.addRedGoal();
         } else if (scoringTeam == blueTeam) {
@@ -131,8 +123,7 @@ public class Match {
                 "Score: "
                         + gameState.getRedScore()
                         + " - "
-                        + gameState.getBlueScore()
-        );
+                        + gameState.getBlueScore());
     }
 
     public void reset() {
@@ -160,7 +151,7 @@ public class Match {
     }
 
     public Ruleset getRuleset() {
-    return ruleset;
+        return ruleset;
     }
 
     public ArrayList<GoalEvent> getGoalEvents() {

@@ -1,5 +1,7 @@
 package simulation;
 
+// list of enums for possible phases of a match. not really implemeneted at this point though.
+
 public enum MatchPhase {
     PRE_GAME,
     KICK_OFF,
