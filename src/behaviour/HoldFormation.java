@@ -3,6 +3,8 @@ package behaviour;
 import entities.Ball;
 import entities.Player;
 
+// helps entities, usually players, understand relation to the ball as an anchor (often spawn point but not always!)
+
 public class HoldFormation implements MovementBehaviour {
 
     private final Ball ball;
@@ -18,7 +20,7 @@ public class HoldFormation implements MovementBehaviour {
         this.ball = ball;
         this.anchorX = anchorX;
         this.anchorY = anchorY;
-        this.ballInfluence = ballInfluence;
+        this.ballInfluence = ballInfluence; // ballInfluence is a percentage/fraction from 1.00 to 0.00.
     }
 
     @Override

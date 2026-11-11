@@ -3,6 +3,9 @@ package simulation;
 import entities.Ball;
 import entities.Team;
 
+// stores the score; elapsed seconds; whether hte game is running or paused; current phase.
+// Reset does clear this data, but does not set the player's positioning or the ball's.
+
 public class GameState {
 
     private Team redTeam;
@@ -70,6 +73,7 @@ public class GameState {
         return elapsedTime;
     }
 
+    // only proceeds as long as time is flowing.
     public void updateTime(int seconds) {
         if (running && !paused && seconds > 0) {
             elapsedTime += seconds;

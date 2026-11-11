@@ -3,6 +3,9 @@ package behaviour;
 import entities.Ball;
 import entities.Player;
 
+// waits for an expected kick from a passer; slows down on approach to ball; attempting to take control.
+// switches to relevant behaviour after a successful reception (but only if supplied with behaviour to continue.)
+
 public class ReceiveBall implements MovementBehaviour {
 
     private final Ball ball;
@@ -28,6 +31,8 @@ public class ReceiveBall implements MovementBehaviour {
     @Override
     public void update(Player player, double deltaSeconds) {
         Player lastToucher = ball.getLastToucher();
+
+        // reception is cancelled if anyone else intercepts or touches the ball.
 
         if (!received
                 && lastToucher != null

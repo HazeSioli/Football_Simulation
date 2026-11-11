@@ -9,6 +9,7 @@ import javax.swing.Timer; // added to try get the ball to Update every n millise
 import ui.SimulationPanel;
 import behaviour.ChallengeForBall;
 import behaviour.AttackWithBall;
+import behaviour.SupportAttack;
 import world.Goal;
 
 public class SimulationSetup {
@@ -104,8 +105,15 @@ public class SimulationSetup {
         redPlayers[5].setMovementBehaviour(
                 new AttackWithBall(ball, map, playSpace.getLength() - 200,
                         playSpace.getWidth() / 2));
+
+        redPlayers[3].setMovementBehaviour(
+                new SupportAttack(
+                        redPlayers[5],
+                        -400.0,
+                        -600.0));
     }
 
+    // checks if the ball is within the goal's area.
     public static boolean isBallInGoal(Ball ball, Goal goal) {
         double radius = ball.getRadiusCm();
 
@@ -116,6 +124,7 @@ public class SimulationSetup {
                 && ball.getZPos() + radius <= goal.getHeight();
     }
 
+    // resets demo, positions of players and ball, but retains the game's current Score.
     public static void resetDemo(
             Ball ball,
             Player[] redPlayers,
@@ -143,7 +152,7 @@ public class SimulationSetup {
     }
 
     /*
-     * OLD PASSING CODE
+     * OLD PASSING CODE - CURRENTLY INACTIVE.
      * private static boolean receiveBall(Ball ball, Player[] players) {
      * for (Player player : players) {
      * if (player != ball.getLastKicker() && player.canReceive(ball)) {

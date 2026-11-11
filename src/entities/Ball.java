@@ -1,18 +1,22 @@
 package entities;
 
+// Stores data about the Ball - position, velocity, size, touch-history (for own-goals, etc).
+
 public class Ball extends Entity {
 
     private double radiusCm = 11.0; // chosen ball radius.
-    private double velocityX = 0.0;
+    private double velocityX = 0.0; // velocity is measured in cm/s
     private double velocityY = 0.0;
     private double velocityZ = 0.0;
-    private Player lastKicker;
-    private Player lastToucher;
+    private Player lastKicker; // not necessarily the same person as Toucher.
+    private Player lastToucher; // not necessarily the same person as Kicker
 
     public Ball(double xPos, double yPos, double zPos) {
         super(xPos, yPos, zPos);
     }
 
+    // ball rolls distance / time. it is affected by the surface it is on, and
+    // decelerates accordingly.
     public void update(double deltaSeconds, double rollingDeceleration) {
         // xPos += velocityX * deltaSeconds;
         // yPos += velocityY * deltaSeconds;
@@ -50,6 +54,8 @@ public class Ball extends Entity {
 
     }
 
+    // has the ball move at a speed/direction towards a determined space. currently
+    // only uses grounded kicks.
     public void kickTowards(double targetX, double targetY, double speedCmPerSecond, Player kicker) {
         double directionX = targetX - xPos;
         double directionY = targetY - yPos;
@@ -72,18 +78,22 @@ public class Ball extends Entity {
 
     }
 
+    // negates all velocity and stops da ball
     public void stop() {
         velocityX = 0;
         velocityY = 0;
         velocityZ = 0;
     }
 
+    // modifies the current position... it is moving.
     void move(double x, double y, double z) {
         xPos += x;
         yPos += y;
         zPos += z;
     }
 
+    // sets the ball's position, rather than having it move naturally; does not
+    // clear it's existing velocity, however.
     public void moveTo(double x, double y, double z) {
         xPos = x;
         yPos = y;
@@ -108,6 +118,7 @@ public class Ball extends Entity {
         return lastToucher;
     }
 
+    // records who touched the ball without changing it's movement.
     public void recordTouch(Player player) {
         lastToucher = player;
     }

@@ -1,5 +1,8 @@
 package simulation;
 
+// the match's settings ; durations measured in seconds; players per team; extra time rules, penalties, etc.
+// Notably, not yet fully implemented.
+
 public class Ruleset {
 
     private int firstHalfDuration;

@@ -6,6 +6,8 @@ import world.GameMap;
 import world.Terrain;
 
 // dribbling da ball!
+// they kick da ball forward and run with it. kick speed includes the speed of the player PLUS some extra oomph.
+// speed is currently capped. but still fast.
 
 public class DribbleTowardsPosition implements MovementBehaviour {
 
@@ -49,19 +51,19 @@ public class DribbleTowardsPosition implements MovementBehaviour {
 
             // project running velocity into the intended kick direction
             double forwardSpeed = Math.max(
-                0.0,
-                player.getVelocityX() * unitX
-                + player.getVelocityY() * unitY);
+                    0.0,
+                    player.getVelocityX() * unitX
+                            + player.getVelocityY() * unitY);
 
-                double kickSpeed = forwardSpeed + player.getDribbleLeadSpeed();
+            double kickSpeed = forwardSpeed + player.getDribbleLeadSpeed();
 
-                double deceleration = surface.getRollingDeceleration();
+            double deceleration = surface.getRollingDeceleration();
 
-                if (deceleration > 0.0) {
-                    double stoppingSpeed = player.calculateGroundKickSpeed(remainingDistance, deceleration);
+            if (deceleration > 0.0) {
+                double stoppingSpeed = player.calculateGroundKickSpeed(remainingDistance, deceleration);
 
-                    kickSpeed = Math.min(kickSpeed, stoppingSpeed);
-                }
+                kickSpeed = Math.min(kickSpeed, stoppingSpeed);
+            }
 
             player.tryKickTowards(targetX, targetY, kickSpeed);
 

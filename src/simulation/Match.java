@@ -6,6 +6,8 @@ import entities.Team;
 
 import java.util.ArrayList;
 
+// This Class manages events and things pertaining to the successful running of the Match itself.
+
 public class Match {
 
     private Team redTeam;
@@ -72,6 +74,7 @@ public class Match {
         }
     }
 
+    // advance time ONLY...! if the clock is not stopped (the game is running/unpaused).
     public void update(int seconds) {
 
         if (!gameState.isRunning()) {

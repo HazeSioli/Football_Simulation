@@ -49,6 +49,7 @@ public class PlaySpace {
                 goalHeight);
     }
 
+    // checks if an X or Y point is within or ourside of the boundary (ignores Z axis).
     public boolean contains(double x, double y) {
         return x >= 0.0
                 && x <= length

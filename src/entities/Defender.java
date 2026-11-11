@@ -19,6 +19,7 @@ public class Defender extends Player {
         super(number, xPos, yPos, zPos, maxSpeed, maxAcceleration);
     }
 
+    // passes to one of their midfielders
     @Override
     public void pass() {
         if (!hasPossession(ball)) {
@@ -35,9 +36,11 @@ public class Defender extends Player {
                 this);
     }
 
+    // Sets a target 15% (of the distance between the ball and their spawn point)
+    // towards the ball.
     @Override
     public void configureDefaultBehaviour(
-        PlaySpace playSpace, boolean defendingLeft) {
+            PlaySpace playSpace, boolean defendingLeft) {
         setMovementBehaviour(
                 new HoldFormation(
                         ball,

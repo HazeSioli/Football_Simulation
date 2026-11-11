@@ -4,6 +4,10 @@ import entities.Ball;
 import entities.Player;
 import world.GameMap;
 
+// player approachies the ball
+// player attempts to take control
+// // if successful, they switch to "AttackWithBall"
+
 public class ChallengeForBall implements MovementBehaviour {
 
     private final Ball ball;
@@ -26,11 +30,11 @@ public class ChallengeForBall implements MovementBehaviour {
     public void update(Player player, double deltaSeconds) {
         if (player.tryControlBall()) {
             player.setMovementBehaviour(
-                new AttackWithBall(
-                    ball,
-                    map,
-                    counterattackX,
-                    counterattackY));
+                    new AttackWithBall(
+                            ball,
+                            map,
+                            counterattackX,
+                            counterattackY));
 
             player.updateMovement(0.0, 0.0, 0.0, deltaSeconds);
 

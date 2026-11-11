@@ -19,6 +19,7 @@ public class Attacker extends Player {
         super(number, xPos, yPos, zPos, maxSpeed, maxAcceleration);
     }
 
+    // randomly chooses a midfielder to pass to
     @Override
     public void pass() {
         if (!hasPossession(ball)) {
@@ -35,9 +36,11 @@ public class Attacker extends Player {
                 this);
     }
 
+    // Sets a target 40% (of the distance between the ball and their spawn point)
+    // towards the ball.
     @Override
     public void configureDefaultBehaviour(
-        PlaySpace playSpace, boolean defendingLeft) {
+            PlaySpace playSpace, boolean defendingLeft) {
         setMovementBehaviour(
                 new HoldFormation(
                         ball,

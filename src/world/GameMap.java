@@ -1,5 +1,8 @@
 package world;
 
+// combines the Playing Region + Environment + Surroungin Margin zones according to a given preset.
+// margins are measured in cm. 
+
 public class GameMap {
 
     private PlaySpace playSpace;

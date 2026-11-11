@@ -19,6 +19,7 @@ public class Goalkeeper extends Player {
         super(number, xPos, yPos, zPos, maxSpeed, maxAcceleration);
     }
 
+    // passes to a defender on their team
     @Override
     public void pass() {
         if (!hasPossession(ball)) {
@@ -37,6 +38,8 @@ public class Goalkeeper extends Player {
                 this);
     }
 
+    // stays in their goal zone; strafes the goal tracking the ball's location
+    // (within the bounds of the goal)
     @Override
     public void configureDefaultBehaviour(
             PlaySpace playSpace, boolean defendingLeft) {

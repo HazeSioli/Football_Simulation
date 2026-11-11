@@ -3,6 +3,9 @@ package simulation;
 import entities.Player;
 import entities.Team;
 
+// Tracks when Goals are score, and who they were scored by!
+// the event itself -- does not update the score.
+
 public class GoalEvent {
 
     private Player scorer;

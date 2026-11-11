@@ -3,9 +3,8 @@ package world;
 /**
  * Describes a goal zone within the playing region.
  * Being inside this region alone does not establish a valid score:
- * Entry through the front openings of the goal is required for a score to be
- * valid.
- * 
+ * Entry through the front openings of the goal should be required for a score to be valid.
+ * That is to say; this is not yet exactly how it works, but soon?
  * all positions and Dimensions are measured in centimeters (cm).
  */
 
